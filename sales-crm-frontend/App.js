@@ -8,12 +8,12 @@ function App() {
   const [email, setEmail] = useState("");
 
   const fetchCustomers = async () => {
-    const res = await axios.get("http://localhost:3000/customers");
+    const res = await axios.get("http://localhost:3001/customers");
     setCustomers(res.data);
   };
 
   const addCustomer = async () => {
-    await axios.post("http://localhost:3000/customers", { name, email });
+    await axios.post("http://localhost:3001/customers", { name, email });
     setName(""); setEmail("");
     fetchCustomers();
   };
