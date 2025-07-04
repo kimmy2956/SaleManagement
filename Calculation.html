@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>เว็บคำนวณบังตาและตาข่ายตะแกรง</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Kanit', sans-serif;
+    background: #e6f0ff;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1 {
+    text-align: center;
+    color: #004080;
+    margin-bottom: 30px;
+    font-weight: 700;
+  }
+
+  section {
+    background: #fff;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+  }
+  section:hover {
+    box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+  }
+
+  h2 {
+    color: #003366;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #3399ff;
+    padding-bottom: 8px;
+    font-weight: 700;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #0059b3;
+  }
+
+  input[type=number], select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: 2px solid #cce0ff;
+    border-radius: 6px;
+    outline-offset: 2px;
+    transition: border-color 0.25s ease;
+  }
+  input[type=number]:focus, select:focus {
+    border-color: #3399ff;
+    box-shadow: 0 0 5px #3399ffaa;
+  }
+
+  input[type=checkbox] {
+    margin-right: 8px;
+    transform: scale(1.2);
+    vertical-align: middle;
+  }
+
+  .inline-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    font-size: 1.1rem;
+    padding: 14px 0;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: 25px;
+    box-shadow: 0 4px 8px #007bffcc;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+
+  .result {
+    margin-top: 20px;
+    background: #cce4ff;
+    border: 2px solid #3399ff;
+    padding: 20px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    color: #003366;
+    text-align: center;
+    user-select: text;
+    min-height: 48px;
+  }
+
+  footer {
+    margin-top: auto;
+    text-align: center;
+    padding: 15px 10px;
+    font-size: 0.9rem;
+    color: #777;
+    border-top: 1px solid #ddd;
+    font-style: italic;
+    background: #f9faff;
+  }
+
+  @media (max-width: 768px) {
+    section {
+      padding: 20px;
+      margin: 0 10px 30px;
+    }
+    button {
+      font-size: 1rem;
+      padding: 12px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>เว็บคำนวณบังตาและตาข่ายตะแกรง</h1>
+
+<!-- เมนู 1: บังตาแข็ง -->
+<section>
+  <h2>1. คำนวณบังตาแข็ง</h2>
+  <label for="hardWidth">ความกว้าง (ซม.)</label>
+  <input type="number" id="hardWidth" min="1" step="1" value="100" />
+
+  <label for="hardThickness">เลือกความหนาเหล็ก</label>
+  <select id="hardThickness">
+    <option value="26">เหล็ก #26</option>
+    <option value="24">เหล็ก #24</option>
+    <option value="22">เหล็ก #22</option>
+  </select>
+
+  <label for="hardHeight">ความสูง (ซม.)</label>
+  <input type="number" id="hardHeight" min="1" step="1" value="230" />
+
+  <label>ความสูงลดแล้วหรือยัง</label>
+  <div class="inline-group">
+    <label><input type="radio" name="hardHeightType" value="reduced" checked /> สูงลดแล้ว</label>
+    <label><input type="radio" name="hardHeightType" value="notReduced" /> ยังไม่ลด</label>
+  </div>
+
+  <label>ล้อบังตาแข็ง</label>
+  <div class="inline-group">
+    <label><input type="radio" name="hardWheel" value="old" checked /> ล้อตันเก่า</label>
+    <label><input type="radio" name="hardWheel" value="bs" /> ล้อ BS (ลดเมตรละ 14 บาท)</label>
+  </div>
+
+  <label for="hardSetCount">จำนวนชุด</label>
+  <input type="number" id="hardSetCount" min="1" step="1" value="1" />
+
+  <label>เปอร์เซ็นส่วนลด</label>
+  <div class="inline-group">
+    <input type="number" id="hardDiscount1" min="0" max="100" step="0.01" placeholder="เช่น 2" />
+    <input type="number" id="hardDiscount2" min="0" max="100" step="0.01" placeholder="เช่น 2" />
+  </div>
+
+  <label>ราคารวม VAT หรือไม่</label>
+  <div class="inline-group">
+    <label><input type="radio" name="hardVat" value="yes" checked /> รวม VAT</label>
+    <label><input type="radio" name="hardVat" value="no" /> ไม่รวม VAT</label>
+  </div>
+
+  <button onclick="calculateHard()">คำนวณบังตาแข็ง</button>
+  <div class="result" id="hardResult"></div>
+</section>
+
+<!-- เมนู 2: บังตาอ่อน -->
+<section>
+  <h2>2. คำนวณบังตาอ่อน</h2>
+
+  <label for="softHeightCm">ความสูง (ซม.)</label>
+  <input type="number" id="softHeightCm" min="1" step="1" value="180" />
+  <div>ความสูงประมาณ <span id="softHeightFt">0</span> ฟุต</div>
+
+  <label for="softWidthCm">ความกว้าง (ซม.)</label>
+  <input type="number" id="softWidthCm" min="1" step="1" value="280" />
+  <div>จำนวนแผ่น (กว้างหาร 14) = <span id="softSheetCount">0</span> แผ่น</div>
+
+  <label for="softNuts">จำนวนแถว (น็อต)</label>
+  <input type="number" id="softNuts" min="1" step="1" value="1" />
+
+  <label>เปิดกลางหรือเก็บซ้าย-ขวา</label>
+  <div class="inline-group">
+    <label><input type="radio" name="softOpenType" value="open" checked /> เปิดกลาง (น็อต x 4)</label>
+    <label><input type="radio" name="softOpenType" value="close" /> เก็บซ้าย-ขวา (น็อต x 2)</label>
+  </div>
+
+  <label for="softSheetLength">เลือกความยาวแผ่น (ฟุต)</label>
+  <select id="softSheetLength">
+    <optgroup label="เหล็กแผ่นดำ">
+      <option value="6_black">6 ฟุต = 23 บาท/แผ่น</option>
+      <option value="7_black">7 ฟุต = 26 บาท/แผ่น</option>
+      <option value="8_black">8 ฟุต = 29 บาท/แผ่น</option>
+      <option value="9_black">9 ฟุต = 32 บาท/แผ่น</option>
+      <option value="10_black">10 ฟุต = 35 บาท/แผ่น</option>
+    </optgroup>
+    <optgroup label="เหล็กแผ่นสังกะสี">
+      <option value="6_galv">6 ฟุต = 40 บาท/แผ่น</option>
+      <option value="7_galv">7 ฟุต = 46 บาท/แผ่น</option>
+      <option value="8_galv">8 ฟุต = 52 บาท/แผ่น</option>
+      <option value="9_galv">9 ฟุต = 60 บาท/แผ่น</option>
+      <option value="10_galv">10 ฟุต = 66 บาท/แผ่น</option>
+    </optgroup>
+  </select>
+
+  <label><input type="checkbox" id="softDrill" /> เจาะรูเพิ่ม 5 บาท</label>
+  <label><input type="checkbox" id="softPaint" /> ทาสีเพิ่ม 5 บาท</label>
+
+  <label for="softNutRows">เพิ่มน็อต (แถวละ 2 บาท)</label>
+  <input type="number" id="softNutRows" min="0" step="1" value="0" />
+
+  <label>จำนวนชุด</label>
+  <input type="number" id="softSetCount" min="1" step="1" value="1" />
+
+  <label>เปอร์เซ็นส่วนลด</label>
+  <div class="inline-group">
+    <input type="number" id="softDiscount1" min="0" max="100" step="0.01" placeholder="เช่น 2" />
+    <input type="number" id="softDiscount2" min="0" max="100" step="0.01" placeholder="เช่น 2" />
+  </div>
+
+  <label>ราคารวม VAT หรือไม่</label>
+  <div class="inline-group">
+    <label><input type="radio" name="softVat" value="yes" checked /> รวม VAT</label>
+    <label><input type="radio" name="softVat" value="no" /> ไม่รวม VAT</label>
+  </div>
+
+  <button onclick="calculateSoft()">คำนวณบังตาอ่อน</button>
+  <div class="result" id="softResult"></div>
+</section>
+
+<!-- เมนู 3: ตาข่ายตะแกรง -->
+<section>
+  <h2>3. คำนวณตาข่ายตะแกรง</h2>
+
+  <label for="meshType">ประเภท</label>
+  <select id="meshType">
+    <option value="zinc_mesh">ตาข่ายชุบซิงค์</option>
+    <option value="pvc_mesh">ตาข่าย PVC</option>
+    <option value="zinc_grate">ตะแกรงชุบซิงค์</option>
+    <option value="pvc_grate">ตะแกรง PVC</option>
+  </select>
+
+  <label for="meshThickness">เลือกความหนาลวด</label>
+  <select id="meshThickness">
+    <option value="8">#8</option>
+    <option value="9">#9</option>
+    <option value="10" selected>#10</option>
+    <option value="11">#11</option>
+    <option value="12">#12</option>
+    <option value="13">#13</option>
+    <option value="14">#14</option>
+  </select>
+
+  <label for="meshSize">ขนาดตา (นิ้ว)</label>
+  <select id="meshSize">
+    <option value="0.5">1/2 (0.5)</option>
+    <option value="0.75">3/4 (0.75)</option>
+    <option value="1">1</option>
+    <option value="1.25">1 1/4 (1.25)</option>
+    <option value="1.5">1 1/2 (1.5)</option>
+    <option value="1.75">1 3/4 (1.75)</option>
+    <option value="2">2</option>
+    <option value="2.25">2 1/4 (2.25)</option>
+    <option value="2.5">2 1/2 (2.5)</option>
+    <option value="3">3</option>
+  </select>
+
+  <label for="meshWidth">ความกว้าง (ซม.)</label>
+  <input type="number" id="meshWidth" min="1" step="1" value="100" />
+
+  <label for="meshHeight">ความสูง (ซม.)</label>
+  <input type="number" id="meshHeight" min="1" step="1" value="100" />
+
+  <label>จำนวนแผ่น/ม้วน</label>
+  <input type="number" id="meshCount" min="1" step="1" value="1" />
+
+  <label>เปอร์เซ็นส่วนลด</label>
+  <div class="inline-group">
+    <input type="number" id="meshDiscount1" min="0" max="100" step="0.01" placeholder="เช่น 2" />
+    <input type="number" id="meshDiscount2" min="0" max="100" step="0.01" placeholder="เช่น 2" />
+  </div>
+
+  <label>ราคารวม VAT หรือไม่</label>
+  <div class="inline-group">
+    <label><input type="radio" name="meshVat" value="yes" checked /> รวม VAT</label>
+    <label><input type="radio" name="meshVat" value="no" /> ไม่รวม VAT</label>
+  </div>
+
+  <button onclick="calculateMesh()">คำนวณตาข่ายตะแกรง</button>
+  <div class="result" id="meshResult"></div>
+</section>
+
+<footer>
+  Developer Thanyarat Phapachiratsakul
+</footer>
+
+<script>
+// ฟังก์ชันคำนวณบังตาแข็ง
+function calculateHard() {
+  const width = Number(document.getElementById('hardWidth').value);
+  const thickness = Number(document.getElementById('hardThickness').value);
+  let height = Number(document.getElementById('hardHeight').value);
+  const heightType = document.querySelector('input[name="hardHeightType"]:checked').value;
+  const wheel = document.querySelector('input[name="hardWheel"]:checked').value;
+  const setCount = Number(document.getElementById('hardSetCount').value);
+  const discount1 = Number(document.getElementById('hardDiscount1').value) || 0;
+  const discount2 = Number(document.getElementById('hardDiscount2').value) || 0;
+  const vatIncluded = document.querySelector('input[name="hardVat"]:checked').value === 'yes';
+
+  // ถ้ายังไม่ลดความสูง ต้องลด 4 ซม.
+  if(heightType === 'notReduced') height -= 4;
+
+  // ราคาต่อเมตรตามความหนาเหล็ก (สมมติ)
+  const pricePerMeter = {
+    26: 220,
+    24: 250,
+    22: 300
+  };
+
+  // ความกว้าง-สูงแปลงเป็นเมตร
+  const widthM = width / 100;
+  const heightM = height / 100;
+
+  // พื้นที่
+  const area = widthM * heightM;
+
+  // ราคาพื้นฐาน
+  let price = area * pricePerMeter[thickness];
+
+  // ล้อ BS ลดเมตรละ 14 บาท (เมตร = กว้างเป็นเมตร)
+  if(wheel === 'bs') {
+    price -= widthM * 14;
+  }
+
+  price *= setCount;
+
+  // ส่วนลด % ทั้งสอง
+  price *= (1 - discount1 / 100);
+  price *= (1 - discount2 / 100);
+
+  // VAT 7%
+  if(vatIncluded) {
+    price *= 1.07;
+  }
+
+  price = price.toFixed(2);
+
+  document.getElementById('hardResult').textContent = `ราคาบังตาแข็งทั้งหมด: ${price} บาท`;
+}
+
+// ฟังก์ชันคำนวณบังตาอ่อน
+function calculateSoft() {
+  const heightCm = Number(document.getElementById('softHeightCm').value);
+  const widthCm = Number(document.getElementById('softWidthCm').value);
+  const nuts = Number(document.getElementById('softNuts').value);
+  const openType = document.querySelector('input[name="softOpenType"]:checked').value;
+  const sheetLength = document.getElementById('softSheetLength').value;
+  const drill = document.getElementById('softDrill').checked;
+  const paint = document.getElementById('softPaint').checked;
+  const nutRows = Number(document.getElementById('softNutRows').value);
+  const setCount = Number(document.getElementById('softSetCount').value);
+  const discount1 = Number(document.getElementById('softDiscount1').value) || 0;
+  const discount2 = Number(document.getElementById('softDiscount2').value) || 0;
+  const vatIncluded = document.querySelector('input[name="softVat"]:checked').value === 'yes';
+
+  // แปลงความสูงเป็นฟุต (1 ฟุต = 30.48 ซม.)
+  const heightFt = (heightCm / 30.48).toFixed(2);
+  document.getElementById('softHeightFt').textContent = heightFt;
+
+  // จำนวนแผ่น = ความกว้าง / 14 ซม.
+  const sheetCountCalc = Math.ceil(widthCm / 14);
+  document.getElementById('softSheetCount').textContent = sheetCountCalc;
+
+  // ราคาต่อแผ่น ตามความยาวและชนิดเหล็ก
+  // รูปแบบ value เช่น "6_black"
+  const [lengthFeetStr, steelType] = sheetLength.split('_');
+  const lengthFeet = Number(lengthFeetStr);
+
+  // ตารางราคาต่อแผ่น (บาท)
+  const priceTable = {
+    black: {6:23, 7:26, 8:29, 9:32, 10:35},
+    galv: {6:40, 7:46, 8:52, 9:60, 10:66}
+  };
+
+  let pricePerSheet = priceTable[steelType][lengthFeet] || 0;
+
+  // น็อต (ถ้าเปิดกลาง น็อต x4, ถ้าเก็บซ้ายขวา x2)
+  const nutMultiplier = (openType === 'open') ? 4 : 2;
+  const totalNuts = nuts * nutMultiplier;
+
+  // ราคาน็อต 3 บาทต่อน็อต
+  const priceNuts = totalNuts * 3;
+
+  // เพิ่มน็อตแถวละ 2 บาท
+  const priceNutRows = nutRows * 2;
+
+  // เจาะรูเพิ่ม 5 บาท ถ้าติ๊ก
+  const priceDrill = drill ? 5 : 0;
+
+  // ทาสีเพิ่ม 5 บาท ถ้าติ๊ก
+  const pricePaint = paint ? 5 : 0;
+
+  // รวมราคาต่อชุด
+  let pricePerSet = (pricePerSheet * sheetCountCalc) + priceNuts + priceNutRows + priceDrill + pricePaint;
+
+  pricePerSet *= setCount;
+
+  // ส่วนลด % ทั้งสอง
+  pricePerSet *= (1 - discount1 / 100);
+  pricePerSet *= (1 - discount2 / 100);
+
+  // VAT 7%
+  if(vatIncluded) {
+    pricePerSet *= 1.07;
+  }
+
+  pricePerSet = pricePerSet.toFixed(2);
+
+  document.getElementById('softResult').textContent = `ราคาบังตาอ่อนทั้งหมด: ${pricePerSet} บาท`;
+}
+
+// ฟังก์ชันคำนวณตาข่ายตะแกรง
+function calculateMesh() {
+  const meshType = document.getElementById('meshType').value;
+  const thickness = Number(document.getElementById('meshThickness').value);
+  const meshSize = Number(document.getElementById('meshSize').value);
+  const widthCm = Number(document.getElementById('meshWidth').value);
+  const heightCm = Number(document.getElementById('meshHeight').value);
+  const count = Number(document.getElementById('meshCount').value);
+  const discount1 = Number(document.getElementById('meshDiscount1').value) || 0;
+  const discount2 = Number(document.getElementById('meshDiscount2').value) || 0;
+  const vatIncluded = document.querySelector('input[name="meshVat"]:checked').value === 'yes';
+
+  // ตารางราคาตัวอย่างตามประเภท-ความหนา-ขนาดตา (บาทต่อตารางเมตร) สมมติ
+  // ราคาประเมินคร่าวๆ
+  const basePriceTable = {
+    zinc_mesh: {8:350,9:370,10:400,11:430,12:460,13:490,14:520},
+    pvc_mesh: {8:450,9:480,10:520,11:560,12:600,13:650,14:700},
+    zinc_grate: {8:400,9:430,10:460,11:490,12:520,13:550,14:580},
+    pvc_grate: {8:500,9:530,10:570,11:610,12:650,13:700,14:750}
+  };
+
+  let pricePerSqm = basePriceTable[meshType]?.[thickness] || 0;
+
+  // พื้นที่ (ตร.ม.) = (กว้าง * สูง) / 10000
+  const area = (widthCm * heightCm) / 10000;
+
+
+  // รวมราคาตามจำนวนแผ่น/ม้วน
+  let priceTotal = pricePerSqm * area * count;
+
+  // ส่วนลด % ทั้งสอง
+  priceTotal *= (1 - discount1 / 100);
+  priceTotal *= (1 - discount2 / 100);
+
+  // VAT 7%
+  if(vatIncluded) {
+    priceTotal *= 1.07;
+  }
+
+  priceTotal = priceTotal.toFixed(2);
+
+  document.getElementById('meshResult').textContent = `ราคาตาข่ายตะแกรงทั้งหมด: ${priceTotal} บาท (พื้นที่ ${area.toFixed(3)} ตร.ม.)`;
+}
+</script>
+
+</body>
+</html>
